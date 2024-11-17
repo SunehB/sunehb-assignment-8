@@ -92,16 +92,22 @@ def do_experiments(start, end, step_num):
         beta0_list.append(beta0)
         beta1_list.append(beta1)
         beta2_list.append(beta2)
+         # Implement: Calculate decision boundary slope and intercept
+        slope = -beta1 / beta2
+        intercept = -beta0 / beta2
+        slope_list.append(slope)
+        intercept_list.append(intercept)
+        # Implement: Calculate and store logistic loss
+        probabilities = model.predict_proba(X)[:, 1]
+        logistic_loss = -np.mean(y * np.log(probabilities) + (1 - y) * np.log(1 - probabilities))
+        loss_list.append(logistic_loss)
         
         # Implement: Plot the dataset
         plt.subplot(n_rows, n_cols, i)
         plt.scatter(X[y == 0, 0], X[y == 0, 1], color='blue', label='Class 0', alpha=0.6)
         plt.scatter(X[y == 1, 0], X[y == 1, 1], color='red', label='Class 1', alpha=0.6)
         
-        # Implement: Calculate and store logistic loss
-        probabilities = model.predict_proba(X)[:, 1]
-        logistic_loss = -np.mean(y * np.log(probabilities) + (1 - y) * np.log(1 - probabilities))
-        loss_list.append(logistic_loss)
+     
         
         # Calculate margin width between 70% confidence contours for each class
         x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
@@ -110,11 +116,7 @@ def do_experiments(start, end, step_num):
         Z = model.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
         Z = Z.reshape(xx.shape)
 
-        # Implement: Calculate decision boundary slope and intercept
-        slope = -beta1 / beta2
-        intercept = -beta0 / beta2
-        slope_list.append(slope)
-        intercept_list.append(intercept)
+       
         
         # Plot the decision boundary
         x_vals = np.array([x_min, x_max])
